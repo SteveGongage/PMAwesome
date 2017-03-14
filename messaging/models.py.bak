@@ -1,0 +1,131 @@
+import datetime
+from django.utils import timezone
+from django.db import models
+
+# ================================================================
+class Message(models.Model):
+	fromEmail = models.CharField(max_length = 254)
+	fromEmailName = models.CharField(max_length = 100, blank = True)
+	fromContact = models.IntegerField(null = True, blank = True)
+
+	toEmail = models.CharField(max_length = 254)
+	toEmailName = models.CharField(max_length = 100, blank = True)
+	toContact = models.IntegerField(null = True, blank = True)
+
+	cc = models.CharField(max_length = 1000, blank = True)
+	bcc = models.CharField(max_length = 1000, blank = True)
+
+	subject = models.CharField(max_length = 80, blank = True)
+	body = models.TextField(blank = True)
+
+	isNew = models.BooleanField(default = False)
+	isArchived = models.BooleanField(default = False)
+
+	propertyID = models.IntegerField(null = True, blank = True)
+
+	created_on = models.DateTimeField(auto_now_add = True)
+	updated_on = models.DateTimeField(auto_now = True)
+
+	def fromName(self):
+		result = self.fromEmail
+		if self.fromEmailName != '':
+			result = self.fromEmailName
+		return result
+
+	def toName(self):
+		return (self.toEmailName, self.toEmail)[self.toEmailName != None]
+		
+	def readState(self):
+		return ('unread', 'read')[self.isNew == True]
+
+	def markAsRead(self):
+		self.isNew = False
+		self.save()
+
+	def createdOn(self):
+		returnValue = 0
+
+		if self.created_on:
+			now = datetime.datetime.now().replace(tzinfo=None)
+			timediff = now - self.created_on.replace(tzinfo=None)
+			secsDiff = timediff.total_seconds()
+
+			if secsDiff/60 < 60:			#minutes
+				returnValue = str(round(secsDiff/60)) +' mins ago'
+			elif secsDiff/60/60 < 24:		#hours
+				returnValue = str(round(secsDiff/60/60)) +' hours ago'
+			elif secsDiff/60/60/24 < 30:	#days
+				returnValue = str(round(secsDiff/60/60/24)) +' days ago'
+			else:							#months
+				returnValue = str(round(secsDiff/60/60/24/30)) +' months ago'
+
+
+		return returnValue
+
+	def was_created_recently(self):
+		now = timezone.now()
+		return now - datetime.timedelta(days=3) <= self.created_on <= now
+		
+	def __str__(self):
+		return self.subject +' (from: '+ self.fromEmail +')'
+
+# ================================================================
+class Contact(models.Model):
+	nameFirst = models.CharField(max_length = 30)
+	nameLast = models.CharField(max_length = 30)
+	nameMiddle = models.CharField(max_length = 30, blank = True)
+	saluation = (
+		('', ''),
+		('Mr', 'Mr'),
+		('Mrs', 'Mrs'),
+		('Ms', 'Ms'),
+		('Miss', 'Miss'),
+		('Dr', 'Dr'),
+		('Mx', 'Mx'),
+	)
+
+	def nameFull(self):
+		return self.nameFirst +' '+ self.nameLast
+
+	def nameReversed(self):
+		return self.nameLast +', '+ self.nameFirst
+
+	def __str__(self):
+		return self.nameFirst +' '+ self.nameLast
+
+# ================================================================
+class Thread(models.Model):
+	requesterContactID = models.IntegerField()
+	threadType = models.CharField(max_length = 20)
+	propertyID = models.IntegerField()
+
+	assignedToContactID = models.IntegerField(null = True, blank = True)
+	subject = models.CharField(max_length = 80)
+	description = models.TextField(blank = True)
+	created_on = models.DateTimeField(auto_now_add = True)
+	updated_on = models.DateTimeField(auto_now = True)
+
+	PRIORITY_URGENT = 1
+	PRIORITY_HIGH	= 3
+	PRIORITY_MEDIUM	= 5
+	PRIORITY_LOW	= 9
+	priority = (
+			(PRIORITY_URGENT, 'Urgent'),
+			(PRIORITY_HIGH, 'High'),
+			(PRIORITY_MEDIUM, 'Medium'),
+			(PRIORITY_LOW, 'Low'),
+		)
+
+
+	STATUS_OPEN = 'open'
+	STATUS_PENDING = 'pending'
+	STATUS_RESOLVED = 'resolved'
+	STATUS_CLOSED = 'closed'
+	STATUS_WAITING = 'waiting'
+	status = (
+			(STATUS_OPEN, 'open'),
+			(STATUS_PENDING, 'pending'),
+			(STATUS_RESOLVED, 'resolved'),
+			(STATUS_CLOSED, 'closed'),
+			(STATUS_WAITING, 'waiting'),
+		)

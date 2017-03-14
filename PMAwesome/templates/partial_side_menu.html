@@ -1,0 +1,54 @@
+{% load static %}
+
+<ul class="nav metismenu" id="side-menu">
+    <li class="nav-header">
+        <div class="dropdown profile-element">
+                <span>
+                    {# <img alt="image" class="img-circle" src="{% static "img/profile_small.jpg" %}" /> #}
+                    <img alt="image" class="img-circle" src="{% static "img/users/profile_small_steve.jpg" %}"  style="width: 48px; height: 48px;"  />
+                </span>
+                <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                <span class="clear"> 
+                    <span class="block m-t-xs"> <strong class="font-bold">Steve Gongage</strong>
+                    </span> 
+                    <span class="text-muted text-xs block">Captain Awesome <b class="caret"></b></span> 
+                </span> 
+                </a>
+                <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                    <li><a href="#">Logout</a></li>
+                </ul>
+        </div>
+        <div class="logo-element">
+            IN+
+        </div>
+    </li>
+
+    
+    <li class="{% if 'Property' in breadCrumb1 %}active{% endif %}">
+        <a href="{% url 'property_list' %}"><i class="fa fa-home"></i> <span class="nav-label">Properties</span></a>
+    </li>
+    
+    
+    <li class="{% if 'Messages' in breadCrumb1 %}active{% endif %}">
+        <a href="{% url "message_list" %}"><i class="fa fa-th-large"></i> <span class="nav-label">Messages</span></span></a>
+    </li>
+
+    <li class="{% if 'Assets' in breadCrumb1 %}active{% endif %}">
+        <a href=""><i class="fa fa-circle"></i> <span class="nav-label">Assets</span></span></a>
+        <ul class="nav nav-second-level {% if 'Assets' not in breadCrumb1 %}collapse{% endif %}">
+            <li class="{% if 'Reserved Key' in breadCrumb2 %}active{% endif %}"><a href="{% url "reserved_keys" %}"><i class="fa fa-key"></i>  Keys</a></li>
+        </ul>
+    </li>
+
+
+    <li class="{% if 'Contact' in breadCrumb1 %}active{% endif %}">
+        <a href=""><i class="fa fa-user"></i> <span class="nav-label">Contacts</span> <span class="fa arrow"></span></a>
+        <ul class="nav nav-second-level {% if 'Contact' not in breadCrumb1 %}collapse{% endif %}">
+            <li class="{% if 'Tenants' in breadCrumb2 %}active{% endif %}"><a href="{% url "contact_list" %}">Tenants</a></li>
+            <li class="{% if 'Owners' in breadCrumb2 %}active{% endif %}"><a href="{% url "contact_list" %}">Owners</a></li>
+            <li class="{% if 'Vendors' in breadCrumb2 %}active{% endif %}"><a href="{% url "contact_list" %}">Vendors</a></li>
+            <li class="{% if 'Others' in breadCrumb2 %}active{% endif %}"><a href="{% url "contact_list" %}">Other</a></li>
+        </ul>
+    </li>
+    
+</ul>

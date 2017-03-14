@@ -1,0 +1,55 @@
+<!-- Dependent on the modal display in inspinia: modal_window.html -->
+
+<!-- Contact Modal -->
+<div class="modal-dialog">
+    <div class="modal-content animated bounceInDown">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title">{{ contact.nameFull }}</h4>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-sm-5">
+                    <h3>Phone Numbers</h3>
+                    <dl class="dl-horizontal">
+                        {% if contact.phone1_type %}
+                            <dt>{{contact.phone1_type}}</dt>
+                            <dd><a href="tel:{{contact.phone1}}">{{contact.phone1}}</a></dd>
+                        {% endif %}
+                        {% if contact.phone2_type %}
+                            <dt>{{contact.phone2_type}}</dt>
+                            <dd><a href="tel:{{contact.phone2}}">{{contact.phone2}}</a></dd>
+                        {% endif %}
+                        {% if contact.phone3_type %}
+                            <dt>{{contact.phone3_type}}</dt>
+                            <dd><a href="tel:{{contact.phone3}}">{{contact.phone3}}</a></dd>
+                        {% endif %}
+                    </dl>
+                </div>
+
+                <div class="col-sm-7">
+                    <h3>Email Addresses</h3>
+                    <dl class="dl-horizontal">
+                        {% if contact.email1_type %}
+                            <dt>{{contact.email1_type}}</dt>
+                            <dd><a href="mailto:{{contact.email1}}">{{contact.email1}}</a></dd>
+                        {% endif %}
+                        {% if contact.email2_type %}
+                            <dt>{{contact.email2_type}}</dt>
+                            <dd><a href="mailto:{{contact.email2}}">{{contact.email2}}</a></dd>
+                        {% endif %}
+                        {% if contact.email3_type %}
+                            <dt>{{contact.email3_type}}</dt>
+                            <dd><a href="mailto:{{contact.email3}}">{{contact.email3}}</a></dd>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <a href="{% url 'contact_detail' contact.id %}" type="button" class="btn btn-info">More Details</a>
+            <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+</div>

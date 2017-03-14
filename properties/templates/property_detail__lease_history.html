@@ -1,0 +1,81 @@
+{% load humanize %}
+
+
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Status</th>
+        <th>Dates</th>
+        <th>Terms</th>
+        <th>Rent Price</th>
+        <th>Tenants</th>
+    </tr>
+    </thead>
+    <tbody>
+        
+        {% for lease in leaseHistory %}
+            <tr>
+                <td>
+                    {% if lease.isFuture %}
+                        <span class="label label-warning"><i class="fa fa-arrow-right"></i> Future</span>                                                
+                    {% elif lease.isCurrent %}
+                        <span class="label label-primary"><i class="fa fa-check"></i> Active</span>                                        
+                    {% else %}
+                        <span class="label label-disabled"><i class="fa fa-arrow-down"></i> Expired</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {{ lease.dateLeaseStart | date:"M d" }}, <strong>{{ lease.dateLeaseStart | date:"Y" }}</strong>
+                    until
+                    {{ lease.dateLeaseEnd | date:"M d" }}, <strong>{{ lease.dateLeaseEnd | date:"Y" }}</strong>
+                    <br />
+                    <small>{{ lease.monthsInLease }} month lease</small>
+                </td>
+                <td>
+                    <dl class="dl-horizontal">
+                        <dt>Late Fees:</dt>
+                        <dd>${{ lease.fee_late | intcomma }}</dd>
+
+                        <dt>Deposit Paid:</dt>
+                        <dd>$</dd>
+
+                        <dt>Rent Due:</dt>
+                        <dd>1st</dd>
+
+                        <dt>Grace Period:</dt>
+                        <dd>4 days</dd>
+
+                        <dt>Late Fee</dt>
+                    </dl>
+                </td>
+                <td>
+                    ${{ lease.terms_priceRent | intcomma}}
+                </td>
+                <td>
+                    <p class="small">
+                        {% for tenant in lease.getTenants %}
+                            <div class="">
+                                <a href="{% url 'contact_detail' tenant.contact_id %}" class="text-bold text-success">
+                                    {% if tenant.isUnderage != True %}
+                                        <i class="fa fa-user fa-user" class="text-success"></i>
+                                    {% else %}
+                                        <a href="{% url 'contact_detail' tenant.contact_id %}" class="text-muted">
+                                        <i class="fa fa-user fa-smile-o" class="text-muted"></i>
+                                    {% endif %}
+                                    {{ tenant.nameFull }}
+                                </a>
+                            </div>
+                        {% empty %}
+                            None
+                        {% endfor %}
+                    </p>
+                </td>
+
+            </tr>
+        
+        {% endfor %}
+    
+
+    </tbody>
+</table>

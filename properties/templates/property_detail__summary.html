@@ -1,0 +1,193 @@
+{% load humanize %}
+
+
+
+<!-- Current Lease ===================================================================== -->
+{% if currentLease != None %}
+
+    <div class="row">
+        <div class="col-md-6">
+            <!-- Contacts  ========================================= -->
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Contacts</h5>
+                    <!--
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-wrench"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-user">
+                            <li><a href="#">Config option 1</a>
+                            </li>
+                            <li><a href="#">Config option 2</a>
+                            </li>
+                        </ul>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                    -->
+                </div>
+
+
+                <div class="ibox-content currentLease">
+
+                    <table class="table table-striped">
+                        {% for contact in contacts %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'contact_detail_modal' contact.contact_id %}" data-toggle="modal" data-target="#multiModal" data-pk="{{contact.contact_id}}" onclick="openModal('/contact/{{contact.contact_id}}/modal')">
+                                        {% if contact.isUnderage != True %}
+                                            <i class="fa fa-user fa-user" class="text-success"></i>
+                                        {% else %}
+                                            <a href="{% url 'contact_detail' contact.contact_id %}" class="text-muted">
+                                            <i class="fa fa-user fa-smile-o" class="text-muted"></i>
+                                        {% endif %}
+                                        {{ contact.nameFull }}
+                                    </a>
+                                </td>
+                                <td>{{contact.get_type_display}}</td>
+                                <td>
+                                    {% if contact.type == contact.TYPE_TENANT %}
+                                        {% if contact.isFinanciallyResponsible %} <span class="label label-success"> <i class="fa fa-money"></i> Responsible</span> {% endif %}
+                                        {% if contact.isUnderage %} <span class="label label-info"> <i class="fa fa-smile-o"></i> Underage</span> {% endif %}
+                                        {% if contact.doNotRenew %} <span class="label label-danger">Do Not Renew</span> {% endif %}
+                                        {% if contact.certifiedFundsOnly %} <span class="label label-warning">Certified Funds Only</span> {% endif %}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            None
+                        {% endfor %}
+                        {% for contact in owners %}
+                            <tr>
+                                <td>
+                                    <!-- <a href="{% url 'contact_detail' contact.contact_id %}" class="text-bold text-success"> -->
+                                    <a href="{% url 'contact_detail_modal' contact.contact_id %}" data-toggle="modal" data-target="#multiModal" data-pk="{{contact.contact_id}}" onclick="openModal('/contact/{{contact.contact_id}}/modal')">
+                                        <i class="fa fa-user fa-user" class="text-success"></i>
+                                        {{ contact.nameFull }}
+                                    </a>
+
+                                </td>
+                                <td>{{contact.get_type_display}}</td>
+                                <td>
+                                    
+                                </td>
+                            </tr>
+                        {% empty %}
+                            None
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        
+
+        <div class="col-md-6">
+            <!-- Contacts  ========================================= -->
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Current Lease</h5>
+
+                    <div class="ibox-tools">
+                        <a href="{% url 'lease_edit_modal' currentLease.id %}" data-toggle="modal" data-target="#multiModal" data-pk="{{currentLease.id}}" onclick="openModal('/lease/edit/{{currentLease.id}}/modal')">
+                            <i class="fa fa-wrench"></i>
+                        </a>
+                        <a href="{% url 'lease_add_modal' prop.id %}" data-toggle="modal" data-target="#multiModal" data-pk="{{prop.id}}" onclick="openModal('/lease/add/{{prop.id}}/modal')">
+                            <i class="fa fa-plus"></i>
+                        </a>
+                    </div>
+                </div>
+
+
+                <div class="ibox-content currentLease">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                            <dl class="dl-horizontal">
+                                <dt>Lease Start:</dt>   <dd>{{currentLease.dateLeaseStart}}</dd>
+                                <dt>Lease End:</dt>     <dd>{{currentLease.dateLeaseEnd}}
+                                <dt>Length:</dt>        <dd>{{currentLease.monthsInLease}} months</dd>
+
+                                <dt>Date Signed:</dt>   <dd>{{currentLease.start_dateLeaseSigned}}</dd>
+                                <dt>Source:</dt>        <dd>{{currentLease.start_isRenewal | yesno:"Renewed Tenant,New Tenant,Unknown"}}</dd>
+                                <dt>Move In:</dt>       <dd>{{currentLease.start_dateMoveIn}}</dd>
+                                <dt>Move Out:</dt>      <dd>{{currentLease.end_dateMoveOut}}</dd>
+                            </dl>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12" id="cluster_info">
+                            <dl class="dl-horizontal" >
+                                <dt>Rent:</dt>          <dd>${{ currentLease.terms_priceRent | intcomma}}</dd>
+                                <dt>Late Fee:</dt>      <dd>${{ currentLease.terms_feeLate | intcomma }}</dd>
+                                <dt>Notice Fee:</dt>    <dd>${{ currentLease.terms_feeLateNotice | intcomma }}</dd>
+
+                                <dt>Deposit Paid:</dt>  <dd>${{ currentLease.terms_depositSecurity | intcomma }}</dd>
+                                <dt>Grace Period:</dt>  <dd>{{ currentLease.terms_lateGraceDays }} days</dd>
+
+                                {% for fees in currentLease.leasefee_set.objects %}
+                                    <dt>{{fee.name}}:</dt>  <dd>${{fee.amount}}</dd>                                
+                                {% endfor %}
+                            </dl>
+                        </div>
+                    </div>
+
+                    <!--- Lease Bar ======================================================================== -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <dl>
+                            {% if prop.currentLease != None %}
+                                <!-- Time on Current Lease -->
+                                    <dt>Lease:  <small>Lease ends in <strong>{{ prop.currentLease.daysRemaining }} days</strong> on {{ prop.currentLease.dateLeaseEnd}}</small></dt>
+                                    <dd>
+                                        <div class="progress m-b-sm">
+                                            <div style="width: {{prop.currentLease.percentUsed}}%;" class="progress-bar {% if prop.currentLease.daysRemaining > 90 %}progress-bar-success{% else %}progress-bar-warning{% endif %}"></div>
+                                        </div>
+                                        
+                                    </dd>
+                            {% elif prop.futureLease != None %}
+                                <!-- Show days until next lease starts -->
+                                    <dt>Between Tenants:</dt>
+                                    <small>Vacant for <strong>{{ prop.daysVacant }}</strong> days.  <strong>{{ prop.daysTillMoveIn }}</strong> days remaining till move in.</small> <dd>
+                                        <div class="progress m-b-sm">
+                                            <div style="width: {{ prop.percentBetweenLeases}}%;" class="progress-bar progress-bar-warning"></div>
+                                        </div>
+
+                                        
+
+                                    </dd>
+                            {% elif prop.previousLease != None %}
+                                <!-- Only has a previous lease -->
+                                    <dt>Vacant:  <small>Vacant for <strong>{{ prop.daysVacant }}</strong></small></dt>
+                                    <dd>
+                                        <div class="progress m-b-sm">
+                                            <div style="width: {{prop.percentBetweenLeases}}%;" class="progress-bar progress-bar-danger"></div>
+                                        </div>
+                                        
+                                    </dd>
+                            {% else %}
+                                <!-- No Leases in System -->
+                                    <dt>Never Rented:  <small>Vacant for <strong>{{ prop.daysVacant }}</strong></small></dt>
+                                    <dd>
+                                        <div class="progress m-b-sm">
+                                            <div style="width: 100%;" class="progress-bar progress-bar-danger"></div>
+                                        </div>
+                                        
+                                    </dd>
+                            {% endif %}
+                            </dl>
+                        </div>
+                    </div>                
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+            
+
+{% endif %}
+

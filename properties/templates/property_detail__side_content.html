@@ -1,0 +1,112 @@
+{% load humanize %}
+
+<div class="wrapper wrapper-content project-manager side-summary small">
+    <h4>{{prop.addressStreet1}}</h4>
+    <!-- <img src="img/zender_logo.png" class="img-responsive"> -->
+
+    <div class="pull-right">
+        <a href="{% url 'property_edit' prop.pk %}" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i> Edit</a>
+    </div>
+
+    <p class="small">
+        {{ prop.addressFull }}
+    </p>
+
+    <h5>Location</h5>
+    <dl class="dl-horizontal">
+        <dt>City:</dt>      <dd>{{prop.addressCity}}</dd>
+        <dt>County:</dt>    <dd>{{prop.addressCounty}}</dd>
+        <dt>Zipcode:</dt>    <dd>{{prop.addressZipcode}}</dd>
+        <dt>Hood:</dt>    <dd>{{prop.neighborhood}}</dd>
+        <dt>Location:</dt>    <dd>{{prop.partOfTown}}</dd>
+
+        <dt>Short:</dt>    <dd>{{prop.addressShort}}</dd>
+        <dt>Full:</dt>    <dd>{{prop.addressFull}}</dd>
+        <dt>Name:</dt>    <dd>{{prop.name}}</dd>
+        <dt>Slug:</dt>    <dd>{{prop.slug}}</dd>
+    </dl>
+
+    <h5>About This Property</h5>            
+    <dl class="dl-horizontal">
+        <dt>Type:</dt>    <dd>{{prop.get_propertyType_display}}</dd>
+        <dt>Rooms:</dt>    <dd>{{prop.bedrooms}} beds / {{prop.bathrooms}} baths</dd>
+        <dt>Area:</dt>    <dd>{{prop.areaHeatedSqFt | intcomma}}</dd>
+        <dt>Built:</dt>    <dd>{{prop.yearBuilt}}</dd>
+        <dt>Pool:</dt>    <dd>{{prop.get_poolType_display}}</dd>
+        <dt>Pets:</dt>      
+        <dd>
+            {% if prop.petDogsOK == True %}
+                <div class="text-info"><i class="fa fa-paw"></i> Dogs OK</div>
+            {% else %}
+                <div class="text-danger"><i class="fa fa-paw"></i> No Dogs!</div>                
+            {% endif %}
+            
+            {% if prop.petCatsOK == True %}
+                <div class="text-info"><i class="fa fa-paw"></i> Cats OK</div>
+            {% else %}
+                <div class="text-danger"><i class="fa fa-paw"></i> No Cats!</div>                
+            {% endif %}
+
+            {% if prop.petRestrictions != None %}
+                <div class="">
+                    <a class="text-warning" data-toggle="popover" data-placement="left" data-content="{{prop.petRestrictions}}">
+                        <i class="fa fa-exclamation-circle"></i> View Restrictions
+                    </a>
+                </div>
+            {% endif %}
+        </dd>
+    </dl>
+
+    {% if prop.marketingDescription %}
+        <h5>Description</h5>
+        <p style="padding-left: 2em;">{{prop.marketingDescription}}</p>
+    {% endif %}
+
+    <h5>Owner's Contract Info</h5>
+    <dl class="dl-horizontal">
+        <dt>Start:</dt>                     <dd>{{prop.dateContractStart}}</dd>
+        <dt>Manager:</dt>                   <dd>{{prop.contactManager}}</dd>
+        <dt>Renewal Fee:</dt>               <dd>$XXX </dd>
+        <dt>First Rental Commission:</dt>   <dd>XX% </dd>
+        <dt>Re-rental Commission:</dt>      <dd>XX% </dd>
+        <dt>Reserved Key</dt>
+        <dd>
+            {% if resKey %}
+                <a href="{% url 'reserved_keys' %}">{{ resKey.spot }}</a>
+            {% else %}
+                <a href="{% url 'reserved_keys' %}" class="text-warning">
+                    <i class="fa fa-exclamation-circle"></i>
+                    None
+                </a>
+            {% endif %}
+        </dd>
+    </dl>
+
+    {% if prop.HOA_name %}
+        <h5>Community Association</h5>
+        <dl class="dl-horizontal">
+            <dt>Name</dt>                   <dd>{{prop.HOA_name}}</dd>
+            <dt>Email</dt>                  <dd><a href="mailto:{{prop.HOA_email}}">{{prop.HOA_email}}</a></dd>
+            <dt>Phone</dt>                  <dd><a href="mailto:{{prop.HOA_phone}}">{{prop.HOA_phone}}</a></dd>
+            <dt>Approval?</dt>              <dd>{{prop.HOA_approvesTenants | yesno:"Approves,Does Not Approve"}}</dd>
+            <dt>Gate Code</dt>              <dd>{{prop.gateCode}}</dd>
+        </dl>
+    {% endif %}
+
+    <h5>Propery Systems</h5>
+    <dl class="dl-horizontal">
+        <dt>Well Water</dt>
+        <dd>{{prop.system_isWellWater | yesno}}</dd>
+        <dt>Septic</dt>
+        <dd>{{prop.system_isWellWater | yesno}}</dd>
+        <dt>Fridge Shutoff</dt>
+        <dd>{{prop.system_refrigeratorWaterShutoff}}</dd>
+        <dt>Excluded Items</dt>
+        <dd>{{prop.system_excludedItems}}</dd>
+        <dt>Irrigation Controller</dt>
+        <dd>{{prop.system_irrigationController}}</dd>
+        <dt>Irrigiation Schedule</dt>
+        <dd>{{prop.system_irrigationSchedule}}</dd>
+    </dl>
+   
+</div>

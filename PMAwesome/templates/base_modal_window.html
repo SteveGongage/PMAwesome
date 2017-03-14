@@ -1,0 +1,19 @@
+<!-- Dependent on the modal display in inspinia: modal_window.html -->
+
+
+<!-- Property Activity -->
+
+<!-- Contact Modal -->
+<div class="modal-dialog">
+    <div class="modal-content animated bounceInDown">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+            {% if pageHeader != None %}
+                <h4 class="modal-title">{{ pageHeader }}</h4>
+            {% endif %}
+        </div>
+        <div class="modal-body">
+            {% block contentModal %}{% endblock %}
+        </div>
+    </div>
+</div>

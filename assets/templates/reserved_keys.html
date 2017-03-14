@@ -1,0 +1,60 @@
+{% extends 'baseTemplate.html' %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="wrapper wrapper-content animated fadeInUp">
+            <!-- Properties without Reserved Keys -->
+            {% if propsWithoutKeys %}
+                <div class="alert alert-warning">
+                    <h3>Properties without Reserved Keys</h3>
+                    <p>The following active properties do not have reserved keys in the system:</p>
+                    <ul>
+                        {% for prop in propsWithoutKeys %}
+                            <li><a href="{% url 'property_detail' prop.pk %}">{{prop}}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Keys</h5>
+                    <div class="ibox-tools">
+                    </div>
+                </div>
+                <div class="ibox-content">
+
+
+                    <table class="table">
+                        <tr>
+                            <th>Cabinet</th>
+                            <th>Spot</th>
+                            <th>Property</th>
+                            <th>Location</th>
+                            <th>Last Updated</th>
+                            <th>Notes</th>
+                        </tr>
+                        {% for key in keys %}
+                            <tr>
+                                <td style="color: #{{key.spot.cabinet.colorHex}}">{{key.spot.cabinet}}</td>
+                                <td style="color: #{{key.spot.cabinet.colorHex}}">{{key.spot.number}}</td>
+                                <td><a href="{% url 'property_detail' key.prop.pk %}">{{key.prop}}</a></td>
+                                <td>{{key.location}}</td>
+                                <td>{{key.last_update_contact}} on {{key.last_update_date}}</td>
+                                <td>{{key.notes}}</td>
+                            </tr>
+                        {% empty %}
+                        
+                        {% endfor %}
+
+                    </table>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
