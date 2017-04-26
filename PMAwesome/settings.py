@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'messaging',
     'assets',
     'fts',
-    'django_forms_bootstrap',
     'localflavor',
 ]
 
@@ -65,7 +64,7 @@ ROOT_URLCONF = 'PMAwesome.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['PMAwesome\\templates'],
+        'DIRS': ['PMAwesome/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
